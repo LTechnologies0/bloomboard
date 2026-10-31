@@ -35,11 +35,11 @@ Chaque tag `v*` lance GitHub Actions et publie :
 | `*x86_64*` | émulateur 64 bits |
 | `*universal*` | les quatre |
 
-L’application est en Kotlin. Une bibliothèque native minuscule sert uniquement à ce que chaque APK de split corresponde à une architecture. Sans keystore dans les secrets du dépôt, l’APK de release est signé avec la clé de debug de la CI, ce qui suffit pour installer, pas pour une mise à jour par-dessus une signature de production.
+L’application est en Kotlin. Une bibliothèque native minuscule sert uniquement à ce que chaque APK de split corresponde à une architecture.
 
-Secrets du dépôt, si vous signez les releases vous-même :
+Les APK de release sont signés uniquement avec les secrets GitHub du dépôt. Le workflow s’arrête si l’un d’eux manque :
 
-- `BLOOMBOARD_KEYSTORE_BASE64`
+- `BLOOMBOARD_KEYSTORE_BASE64` — keystore encodé en base64
 - `BLOOMBOARD_STORE_PASSWORD`
 - `BLOOMBOARD_KEY_ALIAS`
 - `BLOOMBOARD_KEY_PASSWORD`

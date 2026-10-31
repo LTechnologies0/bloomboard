@@ -59,10 +59,14 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            signingConfig = if (signingConfigs.getByName("release").storeFile?.exists() == true) {
-                signingConfigs.getByName("release")
-            } else {
-                signingConfigs.getByName("debug")
+            val releaseStore = signingConfigs.getByName("release").storeFile
+            val requireReleaseSigning = System.getenv("BLOOMBOARD_REQUIRE_SIGNING") == "true"
+            signingConfig = when {
+                releaseStore?.exists() == true -> signingConfigs.getByName("release")
+                requireReleaseSigning -> throw GradleException(
+                    "Release signing requires GitHub secrets BLOOMBOARD_KEYSTORE_BASE64, BLOOMBOARD_STORE_PASSWORD, BLOOMBOARD_KEY_ALIAS and BLOOMBOARD_KEY_PASSWORD.",
+                )
+                else -> signingConfigs.getByName("debug")
             }
         }
     }
