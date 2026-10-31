@@ -1,0 +1,3 @@
+-keep class * extends android.bluetooth.BluetoothHidDevice$Callback { *; }
+-keep class dev.ltechnologies.bloomboard.hid.HidController { *; }
+-keep class dev.ltechnologies.bloomboard.session.SessionService { *; }

@@ -1,0 +1,87 @@
+package dev.ltechnologies.bloomboard.hid
+
+/** Report descriptor for a keyboard plus a relative mouse. Report ids are 1 and 2. */
+object HidReports {
+    const val KEYBOARD_ID = 1
+    const val MOUSE_ID = 2
+
+    val DESCRIPTOR: ByteArray = byteArrayOf(
+        0x05, 0x01,
+        0x09, 0x06,
+        0xA1.toByte(), 0x01,
+        0x85.toByte(), KEYBOARD_ID.toByte(),
+        0x05, 0x07,
+        0x19, 0xE0.toByte(),
+        0x29, 0xE7.toByte(),
+        0x15, 0x00,
+        0x25, 0x01,
+        0x75, 0x01,
+        0x95.toByte(), 0x08,
+        0x81.toByte(), 0x02,
+        0x95.toByte(), 0x01,
+        0x75, 0x08,
+        0x81.toByte(), 0x01,
+        0x95.toByte(), 0x05,
+        0x75, 0x01,
+        0x05, 0x08,
+        0x19, 0x01,
+        0x29, 0x05,
+        0x91.toByte(), 0x02,
+        0x95.toByte(), 0x01,
+        0x75, 0x03,
+        0x91.toByte(), 0x01,
+        0x95.toByte(), 0x06,
+        0x75, 0x08,
+        0x15, 0x00,
+        0x25, 0x65,
+        0x05, 0x07,
+        0x19, 0x00,
+        0x29, 0x65,
+        0x81.toByte(), 0x00,
+        0xC0.toByte(),
+        0x05, 0x01,
+        0x09, 0x02,
+        0xA1.toByte(), 0x01,
+        0x85.toByte(), MOUSE_ID.toByte(),
+        0x09, 0x01,
+        0xA1.toByte(), 0x00,
+        0x05, 0x09,
+        0x19, 0x01,
+        0x29, 0x03,
+        0x15, 0x00,
+        0x25, 0x01,
+        0x95.toByte(), 0x03,
+        0x75, 0x01,
+        0x81.toByte(), 0x02,
+        0x95.toByte(), 0x01,
+        0x75, 0x05,
+        0x81.toByte(), 0x01,
+        0x05, 0x01,
+        0x09, 0x30,
+        0x09, 0x31,
+        0x09, 0x38,
+        0x15, 0x81.toByte(),
+        0x25, 0x7F,
+        0x75, 0x08,
+        0x95.toByte(), 0x03,
+        0x81.toByte(), 0x06,
+        0xC0.toByte(),
+        0xC0.toByte(),
+    )
+
+    fun keyboardReport(modifiers: Int, keys: Collection<Int>): ByteArray {
+        val report = ByteArray(8)
+        report[0] = (modifiers and 0xFF).toByte()
+        keys.take(6).forEachIndexed { index, usage ->
+            report[index + 2] = (usage and 0xFF).toByte()
+        }
+        return report
+    }
+
+    fun mouseReport(buttons: Int, dx: Int, dy: Int, wheel: Int): ByteArray = byteArrayOf(
+        (buttons and 0xFF).toByte(),
+        dx.coerceIn(-127, 127).toByte(),
+        dy.coerceIn(-127, 127).toByte(),
+        wheel.coerceIn(-127, 127).toByte(),
+    )
+}
